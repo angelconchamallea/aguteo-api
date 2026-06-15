@@ -1,0 +1,139 @@
+# ESTADO.md — Aguteo Babys
+
+> Documento vivo. Refleja DÓNDE está el proyecto hoy: qué se construyó, qué sigue,
+> y las decisiones tomadas. Se actualiza al cerrar cada hito (ver PROMPTS.md 9.1).
+> NO es especificación (eso vive en docs/); es la foto del avance.
+> Última actualización: 2026-06-14
+
+---
+
+## Fuente de verdad — jerarquía de documentos
+
+Cuando dos documentos se contradigan, gana el de mayor rango:
+
+1. **MODELO-DATOS.md / API-SPEC.md / FLUJO-WEBPAY.md** — especificación técnica dura.
+   Si el código contradice estos, el código está mal.
+2. **CLAUDE.md (por repo)** — reglas y convenciones operativas.
+3. **DESIGN-SYSTEM.md / FILAMENT-CONVENCIONES.md** — estándares de UI/admin.
+4. **ESTADO.md (este)** — estado y decisiones; no define cómo se implementa, sí qué se decidió.
+
+Si crees que un documento de rango superior está equivocado, NO lo contradigas en
+silencio: dilo y espera que un humano lo corrija primero.
+
+---
+
+## Anti-patrones críticos — leer antes de codear
+
+Lista de choque consolidada. El detalle vive en cada CLAUDE.md (secciones 3 y 6).
+
+**NUNCA en este proyecto:**
+
+- Serializar `cost_price` o `low_stock_threshold` en cualquier respuesta pública de la API.
+- Marcar una orden como `paid` sin `commit()` exitoso de Webpay con monto verificado.
+- Confiar en la redirección del navegador como confirmación de pago.
+- Calcular precios, descuentos o totales en el frontend: solo se muestra lo que la API responde.
+- Descontar stock fuera de una `DB::transaction()` con `lockForUpdate()`.
+- Recalcular `order_items` desde el producto actual: son snapshots inmutables.
+- Usar colores hex fuera de `tailwind.config`, o usar `rose` fuera de CTAs de compra.
+- Resolver `color_token` con if/else por slug en vez de un objeto de mapeo.
+- Usar `localStorage` / `sessionStorage` para carrito o checkout (Zustand + cookie).
+- Implementar features EXCLUIDAS de v1 (ver más abajo) aunque parezcan fáciles.
+- Que el backend genere UI de tienda, o que el frontend toque la DB o Transbank directo.
+- Commitear credenciales productivas de Webpay o el `.env` de producción.
+
+---
+
+## Estado actual
+
+**Fase: A1 y A2 completos ✅ — siguiente: A3 (importador Excel).**
+
+A1 verificado con `sail artisan migrate:fresh --seed` exitoso (24 migraciones,
+7 seeders, 339 comunas, 33 categorías, 12 productos de muestra).
+
+A2 verificado con Filament 3 instalado, panel admin en `/admin`, todos los
+Resources creados y navegación agrupada.
+
+**Próximo hito: A3** (importador Excel de productos). Ver PROMPTS-CONSTRUCCION.md.
+
+### Documentos listos (16 archivos)
+
+| Documento | Repo destino | Estado |
+|---|---|---|
+| CLAUDE.md (api) + AGENTS.md | aguteo-api | ✅ |
+| CLAUDE.md (web) + AGENTS.md | aguteo-web | ✅ |
+| MODELO-DATOS.md | aguteo-api/docs | ✅ |
+| API-SPEC.md | ambos /docs | ✅ |
+| FLUJO-WEBPAY.md | aguteo-api/docs | ✅ |
+| FILAMENT-CONVENCIONES.md | aguteo-api/docs | ✅ |
+| DOCKER-README.md | aguteo-api/docs | ✅ |
+| DESIGN-SYSTEM.md | aguteo-web/docs | ✅ |
+| Dockerfile, entrypoint.sh, nginx.conf, docker-compose.prod.yml | aguteo-api | ✅ |
+| PROMPTS.md + PROMPTS-CONSTRUCCION.md | recursos | ✅ |
+| Plantilla Excel de productos | recursos | ✅ |
+| ESTADO.md (este) | raíz / recursos | ✅ |
+
+### Hitos de construcción
+
+**Backend (aguteo-api):**
+- [x] A1 — Fundación: Laravel + migraciones + modelos + seeders ✅ 2026-06-14
+- [x] A2 — Filament admin (resources + relation managers) ✅ 2026-06-14
+- [ ] A3 — Importador Excel de productos ← SIGUIENTE
+- [ ] A4 — API pública de catálogo
+- [ ] A5 — Órdenes + Webpay (zona crítica)
+- [ ] A6 — Producción (revisar Docker)
+
+**Frontend (aguteo-web):** — arranca después de A4
+- [ ] W1 — Fundación + design system + tipos TS
+- [ ] W2 — Home
+- [ ] W3 — Catálogo y detalle
+- [ ] W4 — Carrito y checkout (después de A5)
+- [ ] W5 — Mini-guías y pulido
+
+### Tareas externas en paralelo (tuyas, no de los agentes)
+- [ ] Verificar WSL2 (`wsl --list --verbose`) y montar estructura de carpetas
+- [ ] Afiliación Webpay Plus en transbank.cl (trámite lento — iniciar ya)
+- [ ] Comprar dominio (verificar aguteobabys.cl en nic.cl)
+- [ ] Crear cuenta Vultr Santiago
+- [ ] Llenar plantilla Excel con los 100+ productos
+- [ ] Fotografías de productos con fondo consistente
+
+---
+
+## Decisiones tomadas (registro)
+
+| Fecha | Decisión | Razón |
+|---|---|---|
+| 2026-06 | Arquitectura híbrida: Laravel API + Next.js front | Backend en terreno conocido; aprender React donde más importa (cliente) |
+| 2026-06 | Filament 3 para el admin | CRUD de 100+ productos en horas, no semanas; desacoplado del front |
+| 2026-06 | Webpay Plus, no Mercado Pago | Confianza del comprador chileno; comisiones más bajas; SDK PHP oficial |
+| 2026-06 | Vultr Santiago, no Clouding.io | Latencia: servidores junto a los clientes (Chile) vs Barcelona |
+| 2026-06 | PostgreSQL 16, no MySQL | Mejor manejo de JSON (jsonb); dirección de la industria; costo cero de cambio |
+| 2026-06 | Docker: Sail local + Compose producción | Paridad de ambientes; sin costo de Forge; aprendizaje |
+| 2026-06 | Checkout como invitado en v1 | Convierte más; ahorra semanas de auth |
+| 2026-06 | Categorías como árbol jerárquico (Materialized Path) | Modelo WooCommerce: 7 raíces + subcategorías, profundidad ilimitada a futuro |
+| 2026-06 | Packs como producto simple en v1 | Bundle real (descuento por componente) se posterga a v1.1 |
+| 2026-06-14 | Docker: postgres:17 + redis:7 (Debian) en vez de Alpine | Las imágenes Alpine fallan en esta máquina (exec format error por arquitectura); Debian funciona igual que la imagen Sail base |
+| 2026-06-14 | Filament instalado con --ignore-platform-req=ext-intl | La imagen php83-composer de Sail no tiene ext-intl; en el container de runtime (PHP 8.5) sí está disponible |
+
+---
+
+## Alcance por versión
+
+**v1 (en construcción):** catálogo con filtros (categoría/rama, etapa, marca, precio),
+variantes por talla, carrito invitado, cupones, Webpay, emails transaccionales,
+admin Filament, importador Excel, mini-guías por etapa.
+
+**EXCLUIDO de v1:** reviews, wishlist, login/registro obligatorio, descuentos
+automáticos activos (esquema listo, lógica inactiva), bundle real de packs,
+multi-moneda, multi-idioma, app móvil, boleta electrónica SII.
+
+**v1.1 (próximo):** descuentos automáticos activos, bundle real de packs,
+revalidación on-demand afinada.
+
+**v2 (futuro):** reviews, cuentas de cliente con historial, wishlist,
+contenido de Instagram integrado, boleta electrónica SII.
+
+---
+
+*Actualizar este documento al cerrar cada hito: marcar el check, mover "SIGUIENTE",
+agregar decisiones nuevas a la tabla, y refrescar la fecha.*
