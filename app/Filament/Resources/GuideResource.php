@@ -55,6 +55,7 @@ class GuideResource extends Resource
                     ->required(),
                 Textarea::make('excerpt')
                     ->label('Resumen corto')
+                    ->required()
                     ->rows(2)
                     ->maxLength(300)
                     ->columnSpanFull(),

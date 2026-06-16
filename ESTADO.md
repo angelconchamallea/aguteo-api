@@ -3,7 +3,7 @@
 > Documento vivo. Refleja DÓNDE está el proyecto hoy: qué se construyó, qué sigue,
 > y las decisiones tomadas. Se actualiza al cerrar cada hito (ver PROMPTS.md 9.1).
 > NO es especificación (eso vive en docs/); es la foto del avance.
-> Última actualización: 2026-06-14
+> Última actualización: 2026-06-16
 
 ---
 
@@ -45,7 +45,7 @@ Lista de choque consolidada. El detalle vive en cada CLAUDE.md (secciones 3 y 6)
 
 ## Estado actual
 
-**Fase: A1 y A2 completos ✅ — siguiente: A3 (importador Excel).**
+**Fase: A1, A2 y A3 completos ✅ — siguiente: A4 (API pública de catálogo).**
 
 A1 verificado con `sail artisan migrate:fresh --seed` exitoso (24 migraciones,
 7 seeders, 339 comunas, 33 categorías, 12 productos de muestra).
@@ -53,7 +53,11 @@ A1 verificado con `sail artisan migrate:fresh --seed` exitoso (24 migraciones,
 A2 verificado con Filament 3 instalado, panel admin en `/admin`, todos los
 Resources creados y navegación agrupada.
 
-**Próximo hito: A3** (importador Excel de productos). Ver PROMPTS-CONSTRUCCION.md.
+A3 verificado con página "Importar productos" operativa: sube `.xlsx`, valida
+cabeceras, muestra preview de 5 filas por hoja, importa en lotes de 50 vía job
+en cola (phpoffice/phpspreadsheet), reporta creados/actualizados/errores por fila.
+
+**Próximo hito: A4** (API pública de catálogo). Ver PROMPTS-CONSTRUCCION.md.
 
 ### Documentos listos (16 archivos)
 
@@ -77,8 +81,8 @@ Resources creados y navegación agrupada.
 **Backend (aguteo-api):**
 - [x] A1 — Fundación: Laravel + migraciones + modelos + seeders ✅ 2026-06-14
 - [x] A2 — Filament admin (resources + relation managers) ✅ 2026-06-14
-- [ ] A3 — Importador Excel de productos ← SIGUIENTE
-- [ ] A4 — API pública de catálogo
+- [x] A3 — Importador Excel de productos ✅ 2026-06-16
+- [ ] A4 — API pública de catálogo ← SIGUIENTE
 - [ ] A5 — Órdenes + Webpay (zona crítica)
 - [ ] A6 — Producción (revisar Docker)
 
@@ -114,6 +118,10 @@ Resources creados y navegación agrupada.
 | 2026-06 | Packs como producto simple en v1 | Bundle real (descuento por componente) se posterga a v1.1 |
 | 2026-06-14 | Docker: postgres:17 + redis:7 (Debian) en vez de Alpine | Las imágenes Alpine fallan en esta máquina (exec format error por arquitectura); Debian funciona igual que la imagen Sail base |
 | 2026-06-14 | Filament instalado con --ignore-platform-req=ext-intl | La imagen php83-composer de Sail no tiene ext-intl; en el container de runtime (PHP 8.5) sí está disponible |
+| 2026-06-15 | color_token en Category y AgeStage cambia de token string a hex | El frontend aún no está construido; hex es más simple (style directo) que mapear tokens en el front |
+| 2026-06-15 | product_variants.size cambiado de enum a VARCHAR(50) | El enum de PostgreSQL rechazaba tallas fuera de la lista predefinida (ej. XG, Único); el admin necesita libertad total de tallas |
+| 2026-06-16 | phpoffice/phpspreadsheet en vez de maatwebsite/excel para A3 | maatwebsite/excel requiere phpspreadsheet <8.5; el proyecto corre PHP 8.5.7; phpspreadsheet 5.x soporta PHP 8.5 nativamente |
+| 2026-06-16 | Entrypoint de compose.yaml como lista YAML en vez de scalar > | El scalar plegado `>` no preservaba las comillas al pasar al shell de Docker, haciendo que sh interpretara los paths como comandos |
 
 ---
 
