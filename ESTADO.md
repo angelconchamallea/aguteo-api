@@ -3,7 +3,7 @@
 > Documento vivo. Refleja DÓNDE está el proyecto hoy: qué se construyó, qué sigue,
 > y las decisiones tomadas. Se actualiza al cerrar cada hito (ver PROMPTS.md 9.1).
 > NO es especificación (eso vive en docs/); es la foto del avance.
-> Última actualización: 2026-06-16
+> Última actualización: 2026-06-16 (A4)
 
 ---
 
@@ -46,7 +46,7 @@ Lista de choque consolidada. El detalle vive en cada CLAUDE.md (secciones 3 y 6)
 
 ## Estado actual
 
-**Fase: A1, A2 y A3 completos ✅ — siguiente: A4 (API pública de catálogo).**
+**Fase: A1, A2, A3 y A4 completos ✅ — siguiente: A5 (Órdenes + Webpay).**
 
 A1 verificado con `sail artisan migrate:fresh --seed` exitoso (24 migraciones,
 7 seeders, 339 comunas, 33 categorías, 12 productos de muestra).
@@ -58,7 +58,13 @@ A3 verificado con página "Importar productos" operativa: sube `.xlsx`, valida
 cabeceras, muestra preview de 5 filas por hoja, importa en lotes de 50 vía job
 en cola (phpoffice/phpspreadsheet), reporta creados/actualizados/errores por fila.
 
-**Próximo hito: A4** (API pública de catálogo). Ver PROMPTS-CONSTRUCCION.md.
+A4 verificado con 10 endpoints bajo `/api/v1/`: categorías (árbol + detalle con
+breadcrumb), etapas, marcas, productos (filtros: categoría rama descendiente, etapa,
+marca, precio, búsqueda; sorts; paginación), detalle de producto (variantes con precio
+resuelto, imágenes, tags, guías relacionadas), guías, tarifas de envío y validación
+de cupones. CORS configurado vía `FRONTEND_URL`. Tests PHPUnit: 20 casos.
+
+**Próximo hito: A5** (Órdenes + Webpay). Ver PROMPTS-CONSTRUCCION.md.
 
 ### Documentos listos (16 archivos)
 
@@ -83,8 +89,8 @@ en cola (phpoffice/phpspreadsheet), reporta creados/actualizados/errores por fil
 - [x] A1 — Fundación: Laravel + migraciones + modelos + seeders ✅ 2026-06-14
 - [x] A2 — Filament admin (resources + relation managers) ✅ 2026-06-14
 - [x] A3 — Importador Excel de productos ✅ 2026-06-16
-- [ ] A4 — API pública de catálogo ← SIGUIENTE
-- [ ] A5 — Órdenes + Webpay (zona crítica)
+- [x] A4 — API pública de catálogo ✅ 2026-06-16
+- [ ] A5 — Órdenes + Webpay (zona crítica) ← SIGUIENTE
 - [ ] A6 — Producción (revisar Docker)
 
 **Frontend (aguteo-web):** — arranca después de A4
@@ -123,6 +129,8 @@ en cola (phpoffice/phpspreadsheet), reporta creados/actualizados/errores por fil
 | 2026-06-15 | product_variants.size cambiado de enum a VARCHAR(50) | El enum de PostgreSQL rechazaba tallas fuera de la lista predefinida (ej. XG, Único); el admin necesita libertad total de tallas |
 | 2026-06-16 | phpoffice/phpspreadsheet en vez de maatwebsite/excel para A3 | maatwebsite/excel requiere phpspreadsheet <8.5; el proyecto corre PHP 8.5.7; phpspreadsheet 5.x soporta PHP 8.5 nativamente |
 | 2026-06-16 | Entrypoint de compose.yaml como lista YAML en vez de scalar > | El scalar plegado `>` no preservaba las comillas al pasar al shell de Docker, haciendo que sh interpretara los paths como comandos |
+| 2026-06-16 | CORS via config/cors.php + FRONTEND_URL env var | API pública bajo api/* necesita CORS para que Next.js (dominio distinto) pueda llamarla; /admin usa sesión y no lo necesita; origen configurable por entorno sin tocar código |
+| 2026-06-16 | rating=null y reviews_count=0 en toda respuesta de producto (v1) | Sistema de reseñas excluido de v1; los campos se incluyen en el contrato desde ya para que el frontend (ProductCard) pueda diseñar la UI sin cambiar el contrato en v2 |
 
 ---
 
