@@ -23,7 +23,7 @@ Devuelve el árbol completo para menú de navegación. Solo nodos activos.
 { "data": [
   {
     "id": 1, "name": "Ropa Bebé e Infantil", "slug": "ropa-bebe",
-    "color_token": "blush", "icon": "shirt", "depth": 0,
+    "color_token": "#F8C8D4", "icon": "shirt", "depth": 0,
     "children": [
       { "id": 8,  "name": "Conjuntos",    "slug": "conjuntos",    "depth": 1, "children": [] },
       { "id": 9,  "name": "Ropa interior","slug": "ropa-interior","depth": 1, "children": [] },
@@ -34,13 +34,14 @@ Devuelve el árbol completo para menú de navegación. Solo nodos activos.
 ```
 Los nodos raíz (depth=0) incluyen `color_token` e `icon`. Los hijos heredan
 el `color_token` del ancestro raíz — no se repite en cada hijo para no inflar la respuesta.
+`color_token` es un valor hex (ej "#F8C8D4"); el front lo aplica directo con `style`.
 
 ### GET /categories/{slug}
 Devuelve el nodo + sus hijos directos + ruta de ancestros (breadcrumb).
 ```json
 { "data": {
   "id": 8, "name": "Conjuntos", "slug": "conjuntos", "depth": 1,
-  "color_token": "blush",
+  "color_token": "#F8C8D4",
   "breadcrumb": [
     { "name": "Ropa Bebé e Infantil", "slug": "ropa-bebe" },
     { "name": "Conjuntos", "slug": "conjuntos" }
@@ -51,7 +52,7 @@ Devuelve el nodo + sus hijos directos + ruta de ancestros (breadcrumb).
 ### GET /age-stages
 ```json
 { "data": [ { "id": 1, "name": "0-3 meses", "slug": "0-3m", "tagline": "Recién llegado",
-  "color_token": "aqua", "min_months": 0, "max_months": 3 } ] }
+  "color_token": "#7DD9D4", "min_months": 0, "max_months": 3 } ] }
 ```
 
 ### GET /brands
@@ -75,16 +76,23 @@ Item del listado:
   "slug": "conjunto-ositos-manga-larga", "short_description": "Algodón suave...",
   "price": 12990, "compare_at_price": null, "discount_percent": null,
   "has_variants": true, "in_stock": true,
+  "rating": null, "reviews_count": 0,
   "brand": { "name": "Aguteo Babys", "slug": "aguteo-babys" },
   "category": {
     "id": 8, "name": "Conjuntos", "slug": "conjuntos",
-    "color_token": "blush",
+    "color_token": "#F8C8D4",
     "root": { "name": "Ropa Bebé e Infantil", "slug": "ropa-bebe" }
   },
-  "age_stages": [ { "slug": "0-3m", "color_token": "aqua" } ],
+  "age_stages": [ { "slug": "0-3m", "color_token": "#7DD9D4" } ],
   "cover_image_url": "https://...", "featured": false
 }
 ```
+
+**Reviews (Opción B — preparado, apagado en v1):** `rating` y `reviews_count` son
+parte del contrato desde v1, pero la API los devuelve `null` y `0` respectivamente
+hasta que el sistema de reseñas se active (v2). El frontend (ProductCard) solo pinta
+estrellas si `rating !== null`. Así el diseño está listo sin construir la lógica de
+moderación todavía. NO crear la tabla `reviews` ni endpoints de reseñas en v1.
 
 ### GET /products/{slug}
 Todo lo anterior más: `description`, `images: [{url, alt_text}]`,

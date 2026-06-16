@@ -24,7 +24,7 @@ Debe coincidir 1:1 con la plantilla Excel de carga (`plantilla-productos-aguteo-
 | slug | string unique | |
 | description | text nullable | |
 | image_path | string nullable | |
-| color_token | string nullable | Solo en nodos raíz; hijos heredan del ancestro raíz |
+| color_token | string nullable | Hex (ej "#7DD9D4"). Solo en nodos raíz; la API lo entrega resuelto a los hijos. Decisión 2026-06-15: hex en vez de token nombrado. |
 | icon | string nullable | Para menú de navegación y home |
 | sort_order | int default 0 | |
 | depth | int default 0 | 0=raíz, 1=subcategoría, 2=sub-sub (reservado) |
@@ -78,7 +78,7 @@ filtro por etapa del bebé, solo navegando por su categoría.
 
 ### age_stages
 id, name ("0-3 meses"), slug ("0-3m"), min_months int, max_months int,
-color_token string (aqua/lavender/tangerine/rose), tagline string ("Recién llegado"),
+color_token string (hex, ej "#7DD9D4"), tagline string ("Recién llegado"),
 sort_order. Seed: 0-3m, 3-6m, 6-12m, 12-24m. Tabla propia (no enum) para asociar guías.
 
 ### products (soft deletes)
@@ -106,7 +106,8 @@ Relaciones: belongsToMany age_stages (pivot product_age_stage),
 belongsToMany tags, hasMany product_images, hasMany product_variants.
 
 ### product_variants
-id, product_id fk, size enum(RN,0-3m,3-6m,6-9m,9-12m,12-18m,18-24m) nullable,
+id, product_id fk, size varchar(50) nullable (libre: RN, 0-3m, ..., XG, Único — decisión
+2026-06-15, era enum pero PostgreSQL rechazaba tallas fuera de lista),
 color string nullable, sku string unique, stock unsigned int,
 price_override unsigned int nullable. Regla: si product.has_variants, el stock vive
 SOLO aquí; products.stock queda null.

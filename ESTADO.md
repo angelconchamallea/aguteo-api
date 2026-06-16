@@ -34,8 +34,9 @@ Lista de choque consolidada. El detalle vive en cada CLAUDE.md (secciones 3 y 6)
 - Calcular precios, descuentos o totales en el frontend: solo se muestra lo que la API responde.
 - Descontar stock fuera de una `DB::transaction()` con `lockForUpdate()`.
 - Recalcular `order_items` desde el producto actual: son snapshots inmutables.
-- Usar colores hex fuera de `tailwind.config`, o usar `rose` fuera de CTAs de compra.
-- Resolver `color_token` con if/else por slug en vez de un objeto de mapeo.
+- Usar colores hex de DISEÑO (botones, fondos, textos) fuera de `tailwind.config`, o
+  usar `rose` fuera de CTAs de compra. EXCEPCIÓN: el color de categoría/etapa viene de
+  la API como hex (es dato, no diseño) y se aplica con `style`. Ver DESIGN-SYSTEM.md regla 1-3.
 - Usar `localStorage` / `sessionStorage` para carrito o checkout (Zustand + cookie).
 - Implementar features EXCLUIDAS de v1 (ver más abajo) aunque parezcan fáciles.
 - Que el backend genere UI de tienda, o que el frontend toque la DB o Transbank directo.
@@ -118,7 +119,7 @@ en cola (phpoffice/phpspreadsheet), reporta creados/actualizados/errores por fil
 | 2026-06 | Packs como producto simple en v1 | Bundle real (descuento por componente) se posterga a v1.1 |
 | 2026-06-14 | Docker: postgres:17 + redis:7 (Debian) en vez de Alpine | Las imágenes Alpine fallan en esta máquina (exec format error por arquitectura); Debian funciona igual que la imagen Sail base |
 | 2026-06-14 | Filament instalado con --ignore-platform-req=ext-intl | La imagen php83-composer de Sail no tiene ext-intl; en el container de runtime (PHP 8.5) sí está disponible |
-| 2026-06-15 | color_token en Category y AgeStage cambia de token string a hex | El frontend aún no está construido; hex es más simple (style directo) que mapear tokens en el front |
+| 2026-06-15 | color_token en Category y AgeStage cambia de token string a hex | El frontend aún no está construido; hex es más simple (style directo) que mapear tokens en el front. Sincronizado en DESIGN-SYSTEM (regla 1-3), API-SPEC, MODELO-DATOS y anti-patrones el 2026-06-16: hex permitido SOLO para color de categoría/etapa (es dato); resto de UI sigue en tokens; rose sigue exclusivo de CTAs |
 | 2026-06-15 | product_variants.size cambiado de enum a VARCHAR(50) | El enum de PostgreSQL rechazaba tallas fuera de la lista predefinida (ej. XG, Único); el admin necesita libertad total de tallas |
 | 2026-06-16 | phpoffice/phpspreadsheet en vez de maatwebsite/excel para A3 | maatwebsite/excel requiere phpspreadsheet <8.5; el proyecto corre PHP 8.5.7; phpspreadsheet 5.x soporta PHP 8.5 nativamente |
 | 2026-06-16 | Entrypoint de compose.yaml como lista YAML en vez de scalar > | El scalar plegado `>` no preservaba las comillas al pasar al shell de Docker, haciendo que sh interpretara los paths como comandos |
