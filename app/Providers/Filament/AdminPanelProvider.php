@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors(['primary' => Color::Rose])
             ->brandName('Aguteo Babys')
             ->brandLogo(asset('images/Aguteo-babys-isologo.svg'))
-            ->brandLogoHeight('2.5rem')
+            ->brandLogoHeight('5.5rem')
             ->favicon(asset('images/Aguteo-babys-icono.svg'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
