@@ -13,7 +13,7 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -29,9 +29,9 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors(['primary' => Color::Rose])
             ->brandName('Aguteo Babys')
-            ->brandLogo(asset('images/Aguteo-babys-isologo.png'))
+            ->brandLogo(asset('images/Aguteo-babys-isologo.svg'))
             ->brandLogoHeight('2.5rem')
-            ->favicon(asset('images/Aguteo-babys-icono.png'))
+            ->favicon(asset('images/Aguteo-babys-icono.svg'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([Pages\Dashboard::class])
@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
+                ValidateCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
