@@ -104,7 +104,7 @@ de cupones. CORS configurado vía `FRONTEND_URL`. Tests PHPUnit: 20 casos.
 - [ ] Verificar WSL2 (`wsl --list --verbose`) y montar estructura de carpetas
 - [ ] Afiliación Webpay Plus en transbank.cl (trámite lento — iniciar ya)
 - [ ] Comprar dominio (verificar aguteobabys.cl en nic.cl)
-- [ ] Crear cuenta Vultr Santiago
+- [ ] Crear cuenta Clouding.io
 - [ ] Llenar plantilla Excel con los 100+ productos
 - [ ] Fotografías de productos con fondo consistente
 
@@ -117,7 +117,7 @@ de cupones. CORS configurado vía `FRONTEND_URL`. Tests PHPUnit: 20 casos.
 | 2026-06 | Arquitectura híbrida: Laravel API + Next.js front | Backend en terreno conocido; aprender React donde más importa (cliente) |
 | 2026-06 | Filament 3 para el admin | CRUD de 100+ productos en horas, no semanas; desacoplado del front |
 | 2026-06 | Webpay Plus, no Mercado Pago | Confianza del comprador chileno; comisiones más bajas; SDK PHP oficial |
-| 2026-06 | Vultr Santiago, no Clouding.io | Latencia: servidores junto a los clientes (Chile) vs Barcelona |
+| 2026-06-17 | Clouding.io, no Vultr | CPU dedicada por defecto (sin noisy neighbor); menor costo; latencia España-Chile aceptable para la escala inicial; se revisa al escalar |
 | 2026-06 | PostgreSQL 16, no MySQL | Mejor manejo de JSON (jsonb); dirección de la industria; costo cero de cambio |
 | 2026-06 | Docker: Sail local + Compose producción | Paridad de ambientes; sin costo de Forge; aprendizaje |
 | 2026-06 | Checkout como invitado en v1 | Convierte más; ahorra semanas de auth |

@@ -23,11 +23,11 @@ El sistema son DOS repos que se comunican SOLO por la API REST:
 ```
 ┌──────────────────────────┐   API REST (docs/API-SPEC.md)   ┌─────────────────────────┐
 │ aguteo-web (OTRO repo)   │ ───────────────────────────────▶│ aguteo-api (ESTE repo)  │
-│ Next.js 14 + TS + Tailwind│                                 │ Laravel 11 + PHP 8.3    │
+│ Next.js 15 + TS + Tailwind│                                 │ Laravel 11 + PHP 8.3    │
 │ Tienda pública            │                                 │ PostgreSQL 16 + Redis   │
 │ Deploy: Vercel            │                                 │ Filament 3 (admin)      │
 └──────────────────────────┘                                 │ Webpay Plus (Transbank) │
-                                                              │ Deploy: Vultr Santiago  │
+                                                              │ Deploy: Clouding.io     │
                                                               │ (Docker Compose)        │
                                                               └─────────────────────────┘
 ```
@@ -68,7 +68,7 @@ El sistema son DOS repos que se comunican SOLO por la API REST:
 ## 5. Entornos
 
 - Local: Laravel Sail (pgsql, redis, mailpit). Emails de prueba en http://localhost:8025.
-- Producción: Docker Compose en Vultr (docs/DOCKER-README.md). No inventes otra infraestructura.
+- Producción: Docker Compose en Clouding.io (docs/DOCKER-README.md). No inventes otra infraestructura.
 - Webpay: credenciales de INTEGRACIÓN en local (públicas de Transbank); productivas
   solo en el .env del servidor. Jamás en git.
 

@@ -1,6 +1,6 @@
 # DOCKER-README.md — Infraestructura Aguteo Babys
 
-Decisión: **Sail en local, Docker Compose en producción** (Vultr Santiago).
+Decisión: **Sail en local, Docker Compose en producción** (Clouding.io).
 Next.js NO se dockeriza (local: npm run dev / producción: Vercel).
 
 ## Estructura en el repo aguteo-api
@@ -29,7 +29,7 @@ php artisan sail:install   # seleccionar: pgsql, redis, mailpit
   DENTRO del filesystem de WSL (~/projects), no en C:\ — la diferencia de
   rendimiento es 10x.
 
-## Producción (Vultr) — setup inicial una sola vez
+## Producción (Clouding.io) — setup inicial una sola vez
 
 ```bash
 # 1. En el servidor Ubuntu 24.04
@@ -79,7 +79,7 @@ docker run --rm -v aguteo-api_storage:/data -v /srv/backups:/backup alpine \
   tar czf /backup/storage-$STAMP.tar.gz -C /data .
 # retener 14 días local
 find /srv/backups -name "*.gz" -mtime +14 -delete
-# TODO: subir a Vultr Object Storage o similar (backup fuera del servidor)
+# TODO: subir a Clouding.io Object Storage o similar (backup fuera del servidor)
 ```
 Regla: un backup que vive solo en el mismo servidor no es backup.
 
